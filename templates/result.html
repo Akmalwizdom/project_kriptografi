@@ -136,13 +136,17 @@
                 </div>
             </div>
 
-            <div class="relative my-8">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-[#319fe8]"></div>
+            <!-- 🔐 Form Dekripsi dengan input password -->
+            <form action="{{ url_for('decrypt_file') }}" method="POST" class="mb-4 space-y-4">
+                <div>
+                    <label for="password" class="block text-[#fee3b3] text-sm mb-2">
+                        Masukkan Password untuk Dekripsi:
+                    </label>
+                    <input type="password" id="password" name="password" required
+                           class="w-full px-4 py-3 rounded-lg bg-transparent border border-[#fec972] text-[#fee3b3] placeholder-[#fee3b3]/70 focus:outline-none focus:ring-2 focus:ring-[#fec972]" 
+                           placeholder="Masukkan password enkripsi Anda">
                 </div>
-            </div>
 
-            <form action="{{ url_for('decrypt_file') }}" method="POST" class="mb-4">
                 <button type="submit" 
                         class="w-full bg-[#fec972] text-[#016bb8] py-4 rounded-xl font-bold text-lg hover:bg-[#fee3b3] transition-all flex items-center justify-center shadow-lg hover:shadow-xl">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,15 +166,12 @@
                 </span>
             </a>
         </div>
-
     </div>
 
     <script>
-        // Add fade-in animation on load
         document.addEventListener('DOMContentLoaded', function() {
-            const card = document.querySelector('body'); // Target body for fade-in
+            const card = document.querySelector('body');
             card.style.opacity = '0';
-            
             setTimeout(() => {
                 card.style.transition = 'all 0.5s ease-out';
                 card.style.opacity = '1';
