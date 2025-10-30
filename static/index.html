@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVault Video - Enkripsi File Video</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
+</head>
+
+<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        // Icons sebagai komponen sederhana (tanpa lucide-react)
+        const Icons = {
+            Upload: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+            ),
+            Lock: () => (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            ),
+            Shield: () => (
+                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            ),
+            Check: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+            ),
+            Eye: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+            ),
+            EyeOff: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+            ),
+            Info: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            ),
+            AlertCircle: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            ),
+            Download: () => (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+            ),
+            FileVideo: () => (
+                <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+            ),
+            Trash: () => (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            )
+        };
+        
+        const VideoEncryptionApp = () => {
+            const [step, setStep] = useState(1);
+            const [file, setFile] = useState(null);
+            const [password, setPassword] = useState('');
+            const [algorithm, setAlgorithm] = useState('AES');
+            const [processing, setProcessing] = useState(false);
+            const [progress, setProgress] = useState(0);
+            const [error, setError] = useState('');
+            const [successMessage, setSuccessMessage] = useState('');
+            const fileInputRef = useRef(null);
+
+            const MAX_FILE_SIZE = 500 * 1024 * 1024;
+
+            const getPasswordStrength = (pwd) => {
+                if (!pwd) return { level: 0, text: '', color: '' };
+                let strength = 0;
+                if (pwd.length >= 8) strength++;
+                if (pwd.length >= 12) strength++;
+                if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength++;
+                if (/\d/.test(pwd)) strength++;
+                if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+
+                const levels = [
+                    { level: 0, text: 'Sangat Lemah', color: 'bg-[#fec972]' },
+                    { level: 1, text: 'Lemah', color: 'bg-[#fec972]' },
+                    { level: 2, text: 'Cukup', color: 'bg-[#fec972]' },
+                    { level: 3, text: 'Kuat', color: 'bg-[#319fe8]' },
+                    { level: 4, text: 'Sangat Kuat', color: 'bg-[#319fe8]' }
+                ];
+                return levels[Math.min(strength, 4)];
+            };
+            const handleFileSelect = (e) => {
+                const selectedFile = e.target.files[0];
+                if (!selectedFile) return;
+
+                if (selectedFile.size > MAX_FILE_SIZE) {
+                    setError('File terlalu besar! Maksimal 500MB');
+                    return;
+                }
+
+                const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska', 'video/x-ms-wmv'];
+                if (!validTypes.includes(selectedFile.type) && !selectedFile.name.match(/\.(mp4|mov|avi|mkv|wmv)$/i)) {
+                    setError('Format file tidak didukung. Gunakan MP4, MOV, AVI, MKV, atau WMV');
+                    return;
+                }
+
+                setFile(selectedFile);
+                setError('');
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                const droppedFile = e.dataTransfer.files[0];
+                if (droppedFile) {
+                    const event = { target: { files: [droppedFile] } };
+                    handleFileSelect(event);
+                }
+            };
+
+            const handleEncrypt = async () => {
+                if (!file || !password) {
+                    setError('File dan password wajib diisi');
+                    return;
+                }
+
+                setProcessing(true);
+                setProgress(0);
+                setError('');
+
+                const formData = new FormData();
+                formData.append('video_file', file);
+                formData.append('password', password);
+                formData.append('algorithm', algorithm);
+
+                try {
+                    const progressInterval = setInterval(() => {
+                        setProgress(prev => Math.min(prev + 10, 90));
+                    }, 300);
+
+                    const response = await fetch('/encrypt', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    clearInterval(progressInterval);
+                    setProgress(100);
+
+                    if (response.ok) {
+                        setSuccessMessage('File berhasil dienkripsi!');
+                        setTimeout(() => {
+                            window.location.href = '/result';
+                        }, 1000);
+                    } else {
+                        const text = await response.text();
+                        setError('Gagal mengenkripsi file. Silakan coba lagi.');
+                    }
+                } catch (err) {
+                    setError('Terjadi kesalahan jaringan. Periksa koneksi Anda.');
+                } finally {
+                    setProcessing(false);
+                }
+            };
+
+            const formatFileSize = (bytes) => {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+            };
+
+            const passwordStrength = getPasswordStrength(password);
+
+            return (
+                <div className="min-h-screen p-4">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-8 pt-8">
+                            <div className="flex items-center justify-center mb-4 text-[#319fe8]">
+                                <Icons.Shield />
+                            </div>
+                            <h1 className="text-4xl font-bold text-[#fee3b3] mb-2">SecureVault Video</h1>
+                            <p className="text-[#fee3b3]">Enkripsi video Anda dengan aman dan mudah</p>
+                        </div>
+
+                        <div className="">
+                            <div className="space-y-6">
+                                <h2 className="text-2xl font-bold text-[#fee3b3] mb-6 flex items-center">
+                                    <span className="mr-2"><Icons.Upload /></span>
+                                    Upload & Konfigurasi
+                                </h2>
+
+                                <div
+                                    className="border-2 border-dashed border-[#319fe8] rounded-xl p-12 text-center hover:border-[#fec972] transition-all cursor-pointer bg-transparent"
+                                    onDrop={handleDrop}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="video/*"
+                                        onChange={handleFileSelect}
+                                        className="hidden"
+                                    />
+                                    {file ? (
+                                        <div className="space-y-4">
+                                            <Icons.FileVideo />
+                                            <div>
+                                                <p className="text-[#fee3b3] font-semibold text-lg">{file.name}</p>
+                                                <p className="text-[#fee3b3]">{formatFileSize(file.size)}</p>
+                                            </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setFile(null);
+                                                }}
+                                                className="text-[#fec972] hover:text-[#fee3b3] text-sm flex items-center justify-center mx-auto"
+                                            >
+                                                <span className="mr-1"><Icons.Trash /></span>
+                                                Hapus File
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <div className="flex justify-center mb-4">
+                                                <Icons.Upload />
+                                            </div>
+                                            <p className="text-[#fee3b3] font-semibold mb-2">Drag & drop video atau klik untuk memilih</p>
+                                            <p className="text-[#fee3b3] text-sm">MP4, MOV, AVI, MKV, WMV (Maks. 500MB)</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-[#fee3b3] font-semibold mb-2">Password</label>
+                                    <div className="relative">
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="Masukkan password enkripsi"
+                                            className="w-full bg-transparent text-[#fee3b3] px-4 py-3 rounded-lg border border-[#319fe8] focus:border-[#fec972] focus:outline-none pr-20"
+                                        />
+                                    </div>
+                                </div>
+
+                                {password && (
+                                    <div className="mt-2">
+                                        <div className="flex items-center justify-between text-sm mb-1">
+                                            <span className="text-[#fee3b3]">Kekuatan Password:</span>
+                                            <span className={`font-semibold text-[#fee3b3]`}>
+                                                {passwordStrength.text}
+                                            </span>
+                                        </div>
+                                        <div className="h-2 bg-transparent border border-[#319fe8] rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full ${passwordStrength.color} transition-all`}
+                                                style={{ width: `${(passwordStrength.level / 4) * 100}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                <div>
+                                    <label className="block text-[#fee3b3] font-semibold mb-2">Algoritma Enkripsi</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {['AES', 'Blowfish'].map((algo) => (
+                                            <button
+                                                key={algo}
+                                                type="button"
+                                                onClick={() => setAlgorithm(algo)}
+                                                className={`p-4 rounded-lg border-2 transition-all ${algorithm === algo
+                                                    ? 'border-[#fec972] bg-[#319fe8] text-[#016bb8]'
+                                                    : 'border-[#319fe8] bg-transparent text-[#fee3b3] hover:bg-[#fee3b3] hover:text-[#016bb8] hover:border-[#fee3b3]'
+                                                    }`}
+                                            >
+                                                <div className="flex justify-center mb-2"><Icons.Lock /></div>
+                                                <p className="font-semibold">{algo}</p>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="bg-transparent border border-[#319fe8] rounded-lg p-4 flex items-start">
+                                    <span className="mr-3 mt-0.5 flex-shrink-0 text-[#319fe8]"><Icons.Info /></span>
+                                    <p className="text-[#fee3b3] text-sm">
+                                        File Anda akan dienkripsi di server dengan algoritma yang Anda pilih.
+                                    </p>
+                                </div>
+
+                                {error && (
+                                    <div className="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start">
+                                        <span className="mr-3 mt-0.5 flex-shrink-0 text-[#fec972]"><Icons.AlertCircle /></span>
+                                        <p className="text-[#fee3b3] text-sm">{error}</p>
+                                    </div>
+                                )}
+
+                                {successMessage && (
+                                    <div className="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start">
+                                        <span className="mr-3 mt-0.5 flex-shrink-0 text-[#fec972]"><Icons.Check /></span>
+                                        <p className="text-[#fee3b3] text-sm">{successMessage}</p>
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={handleEncrypt}
+                                    disabled={!file || !password || processing}
+                                    className="w-full bg-[#fec972] text-[#016bb8] py-4 rounded-lg font-bold text-lg hover:bg-[#fee3b3] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center"
+                                >
+                                    {processing ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#016bb8] mr-2" />
+                                            Mengenkripsi... {progress}%
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="mr-2"><Icons.Lock /></span>
+                                            Enkripsi Sekarang
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<VideoEncryptionApp />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>

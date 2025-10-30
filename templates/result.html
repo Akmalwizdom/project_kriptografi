@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enkripsi Berhasil - SecureVault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8 pt-8">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-[#fee3b3] mb-2">SecureVault Video</h1>
+            <p class="text-[#fee3b3]">File Anda telah diamankan</p>
+        </div>
+
+        <div class="flex items-center justify-center mb-8">
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#fec972] text-[#016bb8] font-bold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div class="w-16 h-1 mx-2 bg-[#fec972]"></div>
+                
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#319fe8] text-[#016bb8] font-bold">
+                    2
+                </div>
+                <div class="w-16 h-1 mx-2 bg-[#319fe8]"></div>
+                
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-transparent border border-[#319fe8] text-[#fee3b3] font-bold">
+                    3
+                </div>
+            </div>
+        </div>
+
+        <div class="">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'success' %}
+                        <div class="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start mb-6">
+                            <svg class="w-5 h-5 text-[#fec972] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="text-[#fee3b3] text-sm">{{ message }}</p>
+                        </div>
+                        {% elif category == 'error' %}
+                        <div class="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start mb-6">
+                            <svg class="w-5 h-5 text-[#fec972] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="text-[#fee3b3] text-sm">{{ message }}</p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-transparent border border-[#fec972] rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                    <svg class="w-10 h-10 text-[#fec972]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-[#fee3b3] mb-2">Enkripsi Berhasil!</h2>
+                <p class="text-[#fee3b3]">File Anda telah diamankan dengan algoritma {{ file_info.algorithm }}</p>
+            </div>
+
+            <div class="bg-transparent border border-[#319fe8] rounded-xl p-6 mb-6 space-y-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-6 h-6 text-[#319fe8] mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <div class="flex-1">
+                            <p class="text-[#fee3b3] text-sm mb-1">File Asli</p>
+                            <p class="text-[#fee3b3] font-semibold break-all">{{ file_info.original_filename }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-[#319fe8] pt-4">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-6 h-6 text-[#fec972] mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <div class="flex-1">
+                            <p class="text-[#fee3b3] text-sm mb-1">File Terenkripsi</p>
+                            <p class="text-[#fec972] font-mono text-sm break-all bg-transparent p-3 rounded-lg">
+                                {{ file_info.encrypted_filename }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-[#319fe8]">
+                    <div>
+                        <p class="text-[#fee3b3] text-sm mb-1">Algoritma</p>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <span class="text-[#fee3b3] font-semibold">{{ file_info.algorithm }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[#fee3b3] text-sm mb-1">Status</p>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-[#fec972] rounded-full animate-pulse"></div>
+                            <span class="text-[#fec972] font-semibold">Tersimpan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ url_for('download_file', type='temp', filename=file_info.encrypted_filename) }}" 
+               class="w-full bg-[#fec972] text-[#016bb8] py-4 rounded-xl font-bold text-lg hover:bg-[#fee3b3] transition-all flex items-center justify-center shadow-lg hover:shadow-xl mb-6 block">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download File Terenkripsi (.enc)
+            </a>
+
+            <div class="bg-transparent border border-[#319fe8] rounded-lg p-4 flex items-start mb-6">
+                <svg class="w-5 h-5 text-[#319fe8] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="text-[#fee3b3] text-sm">
+                    <p class="font-semibold mb-1">File terenkripsi disimpan sementara di server</p>
+                    <p>Lanjutkan ke langkah dekripsi untuk memvalidasi integritas file atau download terlebih dahulu untuk menyimpan file terenkripsi.</p>
+                </div>
+            </div>
+
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-[#319fe8]"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-4 bg-[#016bb8] text-[#fee3b3]">Langkah selanjutnya</span>
+                </div>
+            </div>
+
+            <form action="{{ url_for('decrypt_file') }}" method="POST" class="mb-4">
+                <button type="submit" 
+                        class="w-full bg-[#fec972] text-[#016bb8] py-4 rounded-xl font-bold text-lg hover:bg-[#fee3b3] transition-all flex items-center justify-center shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                    </svg>
+                    Dekripsi & Validasi File
+                </button>
+            </form>
+
+            <a href="{{ url_for('clear_session_files') }}" 
+               class="block text-center text-[#fee3b3] hover:text-[#fec972] transition-all py-3 rounded-lg">
+                <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Batal dan Bersihkan Session
+                </span>
+            </a>
+        </div>
+
+        <div class="mt-8 text-center text-[#fee3b3] text-sm pb-8">
+            <p>🔒 File disimpan dengan aman • 🛡️ Enkripsi standar industri</p>
+        </div>
+    </div>
+
+    <script>
+        // Add fade-in animation on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('body'); // Target body for fade-in
+            card.style.opacity = '0';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
