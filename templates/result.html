@@ -38,25 +38,20 @@
             </div>
         </div>
 
-        <div class="">
+        <div>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        {% if category == 'success' %}
                         <div class="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start mb-6">
                             <svg class="w-5 h-5 text-[#fec972] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {% if category == 'success' %}
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p class="text-[#fee3b3] text-sm">{{ message }}</p>
-                        </div>
-                        {% elif category == 'error' %}
-                        <div class="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start mb-6">
-                            <svg class="w-5 h-5 text-[#fec972] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {% else %}
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {% endif %}
                             </svg>
                             <p class="text-[#fee3b3] text-sm">{{ message }}</p>
                         </div>
-                        {% endif %}
                     {% endfor %}
                 {% endif %}
             {% endwith %}
@@ -109,10 +104,12 @@
                         </div>
                     </div>
                     <div>
-                        <p class="text-[#fee3b3] text-sm mb-1">Status</p>
+                        <p class="text-[#fee3b3] text-sm mb-1">Waktu Enkripsi</p>
                         <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-[#fec972] rounded-full animate-pulse"></div>
-                            <span class="text-[#fec972] font-semibold">Tersimpan</span>
+                            <svg class="w-4 h-4 text-[#fec972]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-[#fec972] font-semibold">{{ file_info.encryption_time }} detik</span>
                         </div>
                     </div>
                 </div>
@@ -126,17 +123,7 @@
                 Download File Terenkripsi (.enc)
             </a>
 
-            <div class="bg-transparent border border-[#319fe8] rounded-lg p-4 flex items-start mb-6">
-                <svg class="w-5 h-5 text-[#319fe8] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div class="text-[#fee3b3] text-sm">
-                    <p class="font-semibold mb-1">File terenkripsi disimpan sementara di server</p>
-                    <p>Lanjutkan ke langkah dekripsi untuk memvalidasi integritas file atau download terlebih dahulu untuk menyimpan file terenkripsi.</p>
-                </div>
-            </div>
-
-            <!-- 🔐 Form Dekripsi dengan input password -->
+            <!-- Input Password untuk Dekripsi -->
             <form action="{{ url_for('decrypt_file') }}" method="POST" class="mb-4 space-y-4">
                 <div>
                     <label for="password" class="block text-[#fee3b3] text-sm mb-2">
