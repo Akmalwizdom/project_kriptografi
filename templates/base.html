@@ -1,88 +1,154 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SecureVault Video{% endblock %}</title>
+    
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    {% block extra_css %}{% endblock %}
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        accent: {
+                            blue: '#319fe8',
+                            gold: '#fec972',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animations */
         @keyframes slideInDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(-100%) translateX(20px); opacity: 0; }
+            to { transform: translateY(0) translateX(0); opacity: 1; }
         }
         @keyframes slideOutUp {
             from { transform: translateY(0); opacity: 1; }
             to { transform: translateY(-100%); opacity: 0; }
         }
-        @keyframes progressBar {
-            from { width: 100%; }
-            to { width: 0%; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .flash-message { animation: slideInDown 0.5s ease-out; }
-        .flash-message.fade-out { animation: slideOutUp 0.5s ease-out; }
+        @keyframes progressBar { 
+            from { width: 100%; } 
+            to { width: 0%; } 
+        }
+
+        .flash-message { animation: slideInDown 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .flash-message.fade-out { animation: slideOutUp 0.3s ease-in; }
+        .page-enter { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="min-h-screen bg-gradient-to-br from-[#016bb8] to-[#319fe8] text-[#fee3b3]">
-    
-    <!-- Flash Messages Container -->
+<body class="min-h-screen bg-slate-900 text-slate-50 antialiased selection:bg-accent-blue/30 selection:text-accent-blue overflow-x-hidden relative">
+
+    <!-- Ambient Background Effects -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[120px] animate-pulse" style="animation-duration: 4s;"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-600/10 blur-[120px] animate-pulse" style="animation-duration: 5s;"></div>
+    </div>
+
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <div id="flash-container" class="fixed top-4 right-4 z-50 space-y-2" style="max-width: 400px;">
+        <div id="flash-container" class="fixed top-6 right-6 z-50 space-y-3 w-full max-w-sm pointer-events-auto">
         {% for category, message in messages %}
-            <div class="flash-message bg-white rounded-lg shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-105" 
+            <div class="flash-message glass-panel rounded-xl overflow-hidden shadow-2xl transform transition-all hover:scale-[1.02]" 
                  data-flash-id="flash-{{ loop.index }}">
-                <div class="flex items-start p-4">
+                <div class="flex items-start p-4 relative z-10">
                     <div class="flex-shrink-0 mr-3">
                         {% if category == 'success' %}
-                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                        <div class="w-8 h-8 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20">
+                            <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                         </div>
                         {% elif category == 'error' %}
-                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </div>
-                        {% elif category == 'warning' %}
-                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01" />
-                            </svg>
+                        <div class="w-8 h-8 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/20">
+                            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </div>
                         {% else %}
-                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01" />
-                            </svg>
+                        <div class="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20">
+                            <svg class="w-4 h-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01" /></svg>
                         </div>
                         {% endif %}
                     </div>
                     
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 mb-1">
-                            {% if category == 'success' %}✓ Berhasil
-                            {% elif category == 'error' %}✗ Error
-                            {% elif category == 'warning' %}⚠ Peringatan
-                            {% else %}ℹ Informasi
-                            {% endif %}
-                        </p>
-                        <p class="text-sm text-gray-600 break-words">{{ message }}</p>
+                        <p class="text-sm font-medium text-slate-200 leading-relaxed">{{ message }}</p>
                     </div>
                     
-                    <button onclick="dismissFlash('flash-{{ loop.index }}')" 
-                            class="flex-shrink-0 ml-3 text-gray-400 hover:text-gray-600 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                    <button onclick="dismissFlash('flash-{{ loop.index }}')" class="ml-3 text-slate-500 hover:text-white transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
                 
-                <div class="h-1 bg-gray-200">
-                    <div class="h-full {% if category == 'success' %}bg-green-500{% elif category == 'error' %}bg-red-500{% elif category == 'warning' %}bg-yellow-500{% else %}bg-blue-500{% endif %}"
-                         style="width: 100%; animation: progressBar 3s linear;"></div>
+                <!-- Progress Bar -->
+                <div class="h-0.5 bg-slate-700/50 w-full absolute bottom-0 left-0">
+                    <div class="h-full {% if category == 'success' %}bg-green-500{% elif category == 'error' %}bg-red-500{% else %}bg-accent-blue{% endif %}"
+                         style="width: 100%; animation: progressBar 3.5s linear forwards;"></div>
                 </div>
             </div>
         {% endfor %}
@@ -91,16 +157,22 @@
     {% endwith %}
 
     <!-- Main Content -->
-    {% block content %}{% endblock %}
+    <main class="page-enter relative z-10 min-h-screen flex flex-col">
+        {% block content %}{% endblock %}
+        
+        <!-- Footer -->
+        <footer class="mt-auto py-8 text-center text-slate-500 text-sm">
+            <p>&copy; 2024 SecureVault. Protected with AES & Blowfish.</p>
+        </footer>
+    </main>
 
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const flashMessages = document.querySelectorAll('.flash-message');
-            
             flashMessages.forEach((flash) => {
                 const flashId = flash.getAttribute('data-flash-id');
-                setTimeout(() => dismissFlash(flashId), 3000);
+                setTimeout(() => dismissFlash(flashId), 3500);
             });
         });
 
@@ -114,7 +186,7 @@
                     if (container && container.children.length === 0) {
                         container.remove();
                     }
-                }, 500);
+                }, 300);
             }
         }
     </script>

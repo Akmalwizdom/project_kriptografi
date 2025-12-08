@@ -1,220 +1,203 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload File - SecureVault Video</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
-    <div class="max-w-3xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8 pt-8">
-            <div class="flex items-center justify-center mb-4">
-                <svg class="w-12 h-12 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+{% extends "base.html" %}
+
+{% block title %}Upload - SecureVault Video{% endblock %}
+
+{% block content %}
+<div class="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-2xl">
+        
+        <!-- Header & Breadcrumb -->
+        <div class="mb-10 text-center">
+            <a href="{{ url_for('index') }}" class="inline-flex items-center text-slate-400 hover:text-white mb-6 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-            </div>
-            <h1 class="text-4xl font-bold text-[#fee3b3] mb-2">Upload File</h1>
-            <div class="flex items-center justify-center gap-3 text-[#fee3b3]">
-                <span class="{% if mode == 'encrypt' %}text-[#319fe8]{% else %}text-[#fec972]{% endif %} font-semibold">
+                Kembali ke Beranda
+            </a>
+            
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                {% if mode == 'encrypt' %}Enkripsi{% else %}Dekripsi{% endif %} File
+            </h1>
+            
+            <div class="flex items-center justify-center gap-3 text-sm">
+                <span class="px-3 py-1 rounded-full {% if mode == 'encrypt' %}bg-accent-blue/10 text-accent-blue border border-accent-blue/20{% else %}bg-accent-gold/10 text-accent-gold border border-accent-gold/20{% endif %}">
                     Mode: {{ 'Enkripsi' if mode == 'encrypt' else 'Dekripsi' }}
                 </span>
-                <span class="text-[#319fe8]">•</span>
-                <span class="text-[#fec972] font-semibold">Algoritma: {{ algorithm }}</span>
+                <span class="text-slate-600">•</span>
+                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                    Algoritma: {{ algorithm }}
+                </span>
             </div>
         </div>
 
-        <!-- Progress Steps -->
-        <div class="flex items-center justify-center mb-8">
-            <div class="flex items-center">
-                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#fec972] text-[#016bb8] font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-                <div class="w-16 h-1 mx-2 bg-[#fec972]"></div>
-                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#fec972] text-[#016bb8] font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-                <div class="w-16 h-1 mx-2 bg-[#fec972]"></div>
-                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#319fe8] text-[#016bb8] font-bold">
-                    3
-                </div>
-            </div>
-        </div>
-
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="bg-transparent border border-[#fec972] rounded-lg p-4 flex items-start mb-6">
-                <svg class="w-5 h-5 text-[#fec972] mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="text-[#fee3b3] text-sm">{{ message }}</p>
-            </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        <!-- Upload Form -->
-        <div class="bg-transparent border-2 border-[#319fe8] rounded-xl p-8 mb-6">
-            <form method="POST" enctype="multipart/form-data" id="uploadForm">
-                <!-- File Upload -->
-                <div class="mb-6">
-                    <label class="block text-[#fee3b3] font-semibold mb-3">
+        <!-- Main Form Card -->
+        <div class="glass-panel rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            <!-- Decorative blur -->
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-blue/5 rounded-full blur-3xl"></div>
+            
+            <form method="POST" enctype="multipart/form-data" id="uploadForm" class="space-y-8 relative z-10">
+                
+                <!-- File Upload Area -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-300">
                         {% if mode == 'encrypt' %}
                         Pilih Video untuk Dienkripsi
                         {% else %}
                         Pilih File Terenkripsi (.enc)
                         {% endif %}
                     </label>
-                    <div class="relative border-2 border-dashed border-[#319fe8] rounded-lg p-8 text-center hover:border-[#fec972] transition-all">
+                    
+                    <div class="group relative w-full h-48 rounded-xl border-2 border-dashed border-slate-700 bg-slate-800/30 hover:bg-slate-800/50 hover:border-accent-blue/50 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer">
                         <input type="file" name="video_file" id="video_file" 
                                accept="{% if mode == 'encrypt' %}.mp4,.mov,.avi,.mkv,.wmv{% else %}.enc{% endif %}" 
-                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
-                        <div id="fileLabel">
-                            <svg class="w-12 h-12 mx-auto mb-4 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <p class="text-[#fee3b3] mb-2">Klik atau seret file ke sini</p>
-                            <p class="text-[#319fe8] text-sm">
-                                {% if mode == 'encrypt' %}
-                                Format: MP4, MOV, AVI, MKV, WMV (Max 500MB)
-                                {% else %}
-                                Format: .enc (Max 500MB)
-                                {% endif %}
-                            </p>
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" required>
+                               
+                        <div id="fileLabel" class="space-y-3 pointer-events-none group-hover:scale-105 transition-transform duration-300">
+                            <div class="w-12 h-12 mx-auto rounded-full bg-slate-700/50 flex items-center justify-center group-hover:bg-accent-blue/20 transition-colors">
+                                <svg class="w-6 h-6 text-slate-400 group-hover:text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-slate-300 font-medium">Klik atau seret file ke sini</p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    {% if mode == 'encrypt' %}
+                                    MP4, MOV, AVI, MKV, WMV (Max 500MB)
+                                    {% else %}
+                                    Format .enc (Max 500MB)
+                                    {% endif %}
+                                </p>
+                            </div>
                         </div>
-                        <div id="fileInfo" class="hidden">
-                            <svg class="w-12 h-12 mx-auto mb-4 text-[#fec972]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+                        <!-- Selected File State -->
+                        <div id="fileInfo" class="hidden absolute inset-0 bg-slate-800/90 flex flex-col items-center justify-center rounded-xl p-6 z-10 backdrop-blur-sm">
+                            <svg class="w-10 h-10 text-emerald-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <p class="text-[#fee3b3] font-semibold" id="fileName"></p>
-                            <p class="text-[#319fe8] text-sm" id="fileSize"></p>
+                            <p class="text-white font-medium truncate max-w-full px-4" id="fileName"></p>
+                            <p class="text-sm text-slate-400 mt-1" id="fileSize"></p>
+                            <p class="text-xs text-accent-blue mt-4 hover:underline cursor-pointer">Klik untuk ganti file</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Password Input -->
-                <div class="mb-6">
-                    <label for="password" class="block text-[#fee3b3] font-semibold mb-3">
-                        Password
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-medium text-slate-300">
+                        Password Keamanan
                         {% if mode == 'decrypt' %}
-                        <span class="text-[#fec972] text-sm">(Gunakan password saat enkripsi)</span>
+                        <span class="text-slate-500 ml-1 font-normal">(Gunakan password yang sama saat enkripsi)</span>
                         {% endif %}
                     </label>
-                    <div class="relative">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 group-focus-within:text-accent-blue transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
                         <input type="password" name="password" id="password" 
-                               class="w-full bg-transparent border-2 border-[#319fe8] rounded-lg px-4 py-3 text-[#fee3b3] focus:outline-none focus:border-[#fec972] transition-colors" 
-                               placeholder="Masukkan password" required minlength="6">
+                               class="block w-full pl-10 pr-12 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all" 
+                               placeholder="Masukkan password rahasia..." required minlength="6">
                         <button type="button" onclick="togglePassword()" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#319fe8] hover:text-[#fec972]">
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-white transition-colors focus:outline-none">
                             <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
-                    <p class="text-[#319fe8] text-sm mt-2">Minimal 6 karakter</p>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" id="submitBtn"
-                        class="w-full bg-[#fec972] hover:bg-[#fee3b3] text-[#016bb8] font-bold py-4 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="btnText">
-                        {% if mode == 'encrypt' %}
-                        🔒 Enkripsi Sekarang
-                        {% else %}
-                        🔓 Dekripsi Sekarang
-                        {% endif %}
-                    </span>
-                    <span id="btnLoading" class="hidden">
-                        <svg class="animate-spin h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Memproses...
-                    </span>
+                        class="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r {% if mode == 'encrypt' %}from-accent-blue to-blue-500{% else %}from-accent-gold to-yellow-500{% endif %} p-[1px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-accent-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01] hover:shadow-lg active:scale-95">
+                    <div class="relative rounded-xl bg-slate-900 group-hover:bg-opacity-0 transition-all duration-300 h-full">
+                        <div class="relative px-8 py-4 flex items-center justify-center">
+                            <span id="btnText" class="font-bold text-lg {% if mode == 'encrypt' %}text-accent-blue group-hover:text-white{% else %}text-accent-gold group-hover:text-slate-900{% endif %} transition-colors flex items-center">
+                                {% if mode == 'encrypt' %}
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                Enkripsi Sekarang
+                                {% else %}
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>
+                                Dekripsi Sekarang
+                                {% endif %}
+                            </span>
+                            
+                            <!-- Loading State -->
+                            <span id="btnLoading" class="hidden font-bold text-lg text-white flex items-center">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Memproses File...
+                            </span>
+                        </div>
+                    </div>
                 </button>
             </form>
         </div>
-
-        <!-- Back Button -->
-        <div class="text-center">
+        
+        <!-- Algorithm Switcher (Optional Footer) -->
+        <div class="mt-8 text-center">
             <a href="{{ url_for('mode_encrypt' if mode == 'encrypt' else 'mode_decrypt') }}" 
-               class="inline-flex items-center px-6 py-3 bg-transparent border border-[#319fe8] text-[#fee3b3] rounded-lg hover:bg-[#fee3b3] hover:text-[#016bb8] hover:border-[#fee3b3] transition-all">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
+               class="text-sm text-slate-500 hover:text-accent-blue transition-colors border-b border-transparent hover:border-accent-blue pb-0.5">
                 Pilih Algoritma Lain
             </a>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        // File upload handler
-        const fileInput = document.getElementById('video_file');
-        const fileLabel = document.getElementById('fileLabel');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
+{% block extra_js %}
+<script>
+    // File upload handler
+    const fileInput = document.getElementById('video_file');
+    const fileLabel = document.getElementById('fileLabel');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
 
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                fileLabel.classList.add('hidden');
-                fileInfo.classList.remove('hidden');
-                fileName.textContent = file.name;
-                fileSize.textContent = `Ukuran: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
-            } else {
-                fileLabel.classList.remove('hidden');
-                fileInfo.classList.add('hidden');
-            }
-        });
-
-        // Password toggle
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />';
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
-            }
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            fileLabel.classList.add('hidden');
+            fileInfo.classList.remove('hidden');
+            fileName.textContent = file.name;
+            fileSize.textContent = `Ukuran: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+        } else {
+            fileLabel.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
         }
+    });
 
-        // Form submission handler
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            const btnLoading = document.getElementById('btnLoading');
-            
-            submitBtn.disabled = true;
-            btnText.classList.add('hidden');
-            btnLoading.classList.remove('hidden');
-        });
+    // Password toggle
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />';
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+        }
+    }
 
-        // Page transition
-        document.addEventListener('DOMContentLoaded', function() {
-            const body = document.body;
-            body.style.opacity = '0';
-            setTimeout(() => {
-                body.style.transition = 'opacity 0.6s ease';
-                body.style.opacity = '1';
-            }, 100);
-        });
-    </script>
-</body>
-</html>
+    // Form submission handler
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+        
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+        
+        // Remove glass effect from button background for cleaner loading state
+        submitBtn.classList.remove('hover:scale-[1.01]', 'hover:shadow-lg');
+    });
+</script>
+{% endblock %}
