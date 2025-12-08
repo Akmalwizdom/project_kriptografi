@@ -4,8 +4,15 @@
             "file_name": "video_1.mp4",
             "size_mb": 49.83,
             "algorithm": "AES",
-            "time": 0.3,
-            "timestamp": "2025-12-08 18:19:00"
+            "time": 0.53,
+            "timestamp": "2025-12-08 18:26:14"
+        },
+        {
+            "file_name": "video_1.mp4",
+            "size_mb": 49.83,
+            "algorithm": "Blowfish",
+            "time": 1.26,
+            "timestamp": "2025-12-08 18:32:52"
         }
     ],
     "decryption": []
