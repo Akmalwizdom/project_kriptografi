@@ -1,117 +1,114 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hasil Enkripsi - SecureVault Video</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8 pt-8">
-            <div class="flex items-center justify-center mb-4">
-                <div class="relative">
-                    <svg class="w-16 h-16 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+{% extends "base.html" %}
+
+{% block title %}Hasil Enkripsi - SecureVault Video{% endblock %}
+
+{% block content %}
+<div class="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-4xl">
+        
+        <!-- Success Animation/Header -->
+        <div class="text-center mb-10">
+            <div class="relative inline-block mb-6">
+                <div class="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse"></div>
+                <div class="relative w-20 h-20 rounded-full bg-slate-800 border-2 border-green-500/50 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                    <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-[#fec972] rounded-full flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#016bb8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
                 </div>
             </div>
-            <h1 class="text-4xl font-bold text-[#fee3b3] mb-2">Enkripsi Berhasil!</h1>
-            <p class="text-[#319fe8]">File Anda telah berhasil dienkripsi dengan aman</p>
+            <h1 class="text-4xl font-bold text-white mb-3">Enkripsi Berhasil!</h1>
+            <p class="text-slate-400 max-w-lg mx-auto">
+                File video Anda telah diamankan menggunakan algoritma <span class="text-accent-blue font-semibold">{{ file_info.algorithm }}</span>.
+            </p>
         </div>
 
-        <!-- File Information -->
-        <div class="bg-transparent border-2 border-[#319fe8] rounded-xl p-6 mb-6">
-            <h2 class="text-2xl font-bold text-[#fee3b3] mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-2 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <!-- Main Content Card -->
+        <div class="glass-panel rounded-2xl p-8 md:p-10 shadow-2xl mb-8 relative overflow-hidden">
+            <!-- Decorative line -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-accent-blue"></div>
+            
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Informasi File
+                Detail Enkripsi
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-[#016bb8] bg-opacity-50 rounded-lg p-4">
-                    <p class="text-[#319fe8] text-sm mb-1">File Asli</p>
-                    <p class="text-[#fee3b3] font-semibold break-all">{{ file_info.original_filename }}</p>
+
+            <!-- Grid Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Original File -->
+                <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">File Asli</p>
+                    <p class="text-slate-200 font-medium break-all flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-1 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        {{ file_info.original_filename }}
+                    </p>
                 </div>
-                <div class="bg-[#016bb8] bg-opacity-50 rounded-lg p-4">
-                    <p class="text-[#319fe8] text-sm mb-1">File Terenkripsi</p>
-                    <p class="text-[#fee3b3] font-semibold break-all">{{ file_info.encrypted_filename }}</p>
+
+                <!-- Encrypted File -->
+                <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">File Terenkripsi</p>
+                    <p class="text-accent-blue font-medium break-all flex items-start">
+                        <svg class="w-4 h-4 mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        {{ file_info.encrypted_filename }}
+                    </p>
                 </div>
-                <div class="bg-[#016bb8] bg-opacity-50 rounded-lg p-4">
-                    <p class="text-[#319fe8] text-sm mb-1">Algoritma</p>
-                    <p class="text-[#fee3b3] font-semibold">{{ file_info.algorithm }}</p>
+
+                <!-- Algorithm -->
+                <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Algoritma</p>
+                    <p class="text-slate-200 font-medium flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-green-400 mr-2"></span>
+                        {{ file_info.algorithm }}
+                    </p>
                 </div>
-                <div class="bg-[#016bb8] bg-opacity-50 rounded-lg p-4">
-                    <p class="text-[#319fe8] text-sm mb-1">Waktu Enkripsi</p>
-                    <p class="text-[#fee3b3] font-semibold">{{ file_info.encryption_time }} detik</p>
+
+                <!-- Time -->
+                <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Waktu Proses</p>
+                    <p class="text-slate-200 font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        {{ file_info.encryption_time }} detik
+                    </p>
                 </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                <a href="{{ url_for('download_file_route', type='encrypted', filename=file_info.encrypted_filename) }}" 
+                   class="flex-1 bg-gradient-to-r from-accent-blue to-blue-600 hover:to-blue-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-accent-blue/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center group">
+                    <svg class="w-5 h-5 mr-2 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Unduh File .enc
+                </a>
+
+                <form method="POST" action="{{ url_for('decrypt_now') }}" class="flex-1">
+                    <button type="submit" 
+                            class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-4 px-6 rounded-xl border border-slate-600 hover:border-slate-500 transition-all flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                        </svg>
+                        Test Dekripsi Langsung
+                    </button>
+                </form>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="space-y-4 mb-6">
-            <!-- Download Button -->
-            <a href="{{ url_for('download_file_route', type='encrypted', filename=file_info.encrypted_filename) }}" 
-               class="w-full bg-[#319fe8] hover:bg-[#fee3b3] text-[#016bb8] font-bold py-4 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Unduh File Terenkripsi
-            </a>
-
-            <!-- Decrypt Now Button -->
-            <form method="POST" action="{{ url_for('decrypt_now') }}">
-                <button type="submit" 
-                        class="w-full bg-[#fec972] hover:bg-[#fee3b3] text-[#016bb8] font-bold py-4 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                    </svg>
-                    Dekripsi Sekarang
-                </button>
-            </form>
-        </div>
-
-        <!-- Navigation -->
-        <div class="flex justify-center gap-4">
+        <!-- Footer Actions -->
+        <div class="flex justify-center gap-6">
             <a href="{{ url_for('index') }}" 
-               class="inline-flex items-center px-6 py-3 bg-transparent border border-[#319fe8] text-[#fee3b3] rounded-lg hover:bg-[#fee3b3] hover:text-[#016bb8] hover:border-[#fee3b3] transition-all">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
+               class="text-slate-500 hover:text-white text-sm font-medium transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                 Kembali ke Beranda
             </a>
             
             <a href="{{ url_for('clear_session_files') }}" 
-               class="inline-flex items-center px-6 py-3 bg-transparent border border-[#fec972] text-[#fee3b3] rounded-lg hover:bg-[#fec972] hover:text-[#016bb8] transition-all">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+               class="text-red-400/70 hover:text-red-400 text-sm font-medium transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 Bersihkan Sesi
             </a>
         </div>
     </div>
-
-    <script>
-        // Page transition
-        document.addEventListener('DOMContentLoaded', function() {
-            const body = document.body;
-            body.style.opacity = '0';
-            setTimeout(() => {
-                body.style.transition = 'opacity 0.6s ease';
-                body.style.opacity = '1';
-            }, 100);
-        });
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}
