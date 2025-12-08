@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hasil Analisis - SecureVault Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #016bb8;
+            color: #fee3b3;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8 pt-8">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-16 h-16 text-[#fec972]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-[#fee3b3] mb-2">Hasil Analisis Performa</h1>
+            <p class="text-[#fec972]">Perbandingan kecepatan dan integritas antara AES dan Blowfish</p>
+        </div>
+
+        <!-- Summary Stats -->
+        {% if test_data %}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-[#016bb8] bg-opacity-50 border border-[#319fe8] rounded-xl p-4 text-center">
+                <p class="text-[#319fe8] text-sm">Total Uji</p>
+                <p class="text-[#fee3b3] text-2xl font-bold">{{ test_data|length }}</p>
+            </div>
+            <div class="bg-[#016bb8] bg-opacity-50 border border-[#319fe8] rounded-xl p-4 text-center">
+                <p class="text-[#319fe8] text-sm">AES Valid</p>
+                <p class="text-[#fee3b3] text-2xl font-bold">
+                    {{ test_data | selectattr('algorithm', 'equalto', 'AES') | selectattr('is_valid', 'equalto', true) | list | length }}
+                </p>
+            </div>
+            <div class="bg-[#016bb8] bg-opacity-50 border border-[#fec972] rounded-xl p-4 text-center">
+                <p class="text-[#fec972] text-sm">Blowfish Valid</p>
+                <p class="text-[#fee3b3] text-2xl font-bold">
+                    {{ test_data | selectattr('algorithm', 'equalto', 'Blowfish') | selectattr('is_valid', 'equalto', true) | list | length }}
+                </p>
+            </div>
+            <div class="bg-[#016bb8] bg-opacity-50 border border-[#fee3b3] rounded-xl p-4 text-center">
+                <p class="text-[#fee3b3] text-sm">File Gagal</p>
+                <p class="text-[#fee3b3] text-2xl font-bold">
+                    {{ test_data | selectattr('is_valid', 'equalto', false) | list | length }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Encryption Time Chart -->
+            <div class="bg-transparent border-2 border-[#319fe8] rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-[#fee3b3] mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Waktu Enkripsi (detik)
+                </h2>
+                <canvas id="encryptChart" height="200"></canvas>
+            </div>
+
+            <!-- Decryption Time Chart -->
+            <div class="bg-transparent border-2 border-[#fec972] rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-[#fee3b3] mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-[#fec972]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Waktu Dekripsi (detik)
+                </h2>
+                <canvas id="decryptChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Detailed Table -->
+        <div class="bg-transparent border-2 border-[#fee3b3] rounded-xl p-6 mb-8 overflow-x-auto">
+            <h2 class="text-2xl font-bold text-[#fee3b3] mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-[#fee3b3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Detail Hasil Pengujian
+            </h2>
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="border-b border-[#319fe8]">
+                        <th class="py-2 px-4 text-left">File</th>
+                        <th class="py-2 px-4 text-left">Algoritma</th>
+                        <th class="py-2 px-4 text-right">Enkripsi (s)</th>
+                        <th class="py-2 px-4 text-right">Dekripsi (s)</th>
+                        <th class="py-2 px-4 text-center">Integritas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in test_data %}
+                    <tr class="border-b border-[#319fe8] hover:bg-[#016bb8] hover:bg-opacity-30">
+                        <td class="py-2 px-4 break-all max-w-xs">{{ item.filename }}</td>
+                        <td class="py-2 px-4">
+                            <span class="px-2 py-1 rounded text-xs font-semibold
+                                {% if item.algorithm == 'AES' %}bg-[#319fe8] text-[#016bb8]
+                                {% else %}bg-[#fec972] text-[#016bb8]{% endif %}">
+                                {{ item.algorithm }}
+                            </span>
+                        </td>
+                        <td class="py-2 px-4 text-right">
+                            {% if item.encryption_time is not none %}
+                                {{ "%.3f"|format(item.encryption_time) }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="py-2 px-4 text-right">
+                            {% if item.decryption_time is not none %}
+                                {{ "%.3f"|format(item.decryption_time) }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="py-2 px-4 text-center">
+                            {% if item.is_valid == true %}
+                                <span class="text-green-400">✓ Valid</span>
+                            {% elif item.is_valid == false %}
+                                <span class="text-yellow-300">⚠️ Tidak Valid</span>
+                            {% else %}
+                                <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-transparent border border-[#fec972] rounded-lg p-6 text-center mb-8">
+            <svg class="w-12 h-12 text-[#fec972] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-[#fee3b3]">Belum ada data pengujian tersedia.</p>
+            <p class="text-[#fec972] text-sm mt-2">Silakan lakukan enkripsi dan dekripsi terlebih dahulu.</p>
+        </div>
+        {% endif %}
+
+        <!-- Navigation -->
+        <div class="flex justify-center gap-4">
+            <a href="{{ url_for('index') }}"
+               class="inline-flex items-center px-6 py-3 bg-transparent border border-[#319fe8] text-[#fee3b3] rounded-lg hover:bg-[#fee3b3] hover:text-[#016bb8] hover:border-[#fee3b3] transition-all">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    {% if test_data %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const data = {{ test_data | tojson }};
+
+            const aesData = data.filter(d => d.algorithm === 'AES');
+            const blowfishData = data.filter(d => d.algorithm === 'Blowfish');
+            
+            // --- PERBAIKAN PADA JAVASCRIPT ---
+            // Ambil waktu, pastikan untuk memfilter nilai null agar tidak merusak perhitungan rata-rata
+            const aesEncTimes = aesData.map(d => d.encryption_time).filter(t => t != null);
+            const blowfishEncTimes = blowfishData.map(d => d.encryption_time).filter(t => t != null);
+            const aesDecTimes = aesData.map(d => d.decryption_time).filter(t => t != null);
+            const blowfishDecTimes = blowfishData.map(d => d.decryption_time).filter(t => t != null);
+
+            // Fungsi helper untuk menghitung rata-rata dengan aman
+            const average = (arr) => arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
+
+            // Encryption Chart
+            new Chart(document.getElementById('encryptChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['AES', 'Blowfish'],
+                    datasets: [{
+                        label: 'Rata-rata Waktu Enkripsi (detik)',
+                        data: [
+                            average(aesEncTimes),
+                            average(blowfishEncTimes)
+                        ],
+                        backgroundColor: ['#319fe8', '#fec972'],
+                        borderColor: ['#016bb8', '#d9a53a'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#fee3b3' },
+                            grid: { color: 'rgba(254,227,179,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#fee3b3' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Decryption Chart
+            new Chart(document.getElementById('decryptChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['AES', 'Blowfish'],
+                    datasets: [{
+                        label: 'Rata-rata Waktu Dekripsi (detik)',
+                        data: [
+                            average(aesDecTimes),
+                            average(blowfishDecTimes)
+                        ],
+                        backgroundColor: ['#319fe8', '#fec972'],
+                        borderColor: ['#016bb8', '#d9a53a'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#fee3b3' },
+                            grid: { color: 'rgba(254,227,179,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#fee3b3' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

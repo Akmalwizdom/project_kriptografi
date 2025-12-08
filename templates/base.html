@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SecureVault Video{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_css %}{% endblock %}
+    <style>
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOutUp {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+        @keyframes progressBar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        .flash-message { animation: slideInDown 0.5s ease-out; }
+        .flash-message.fade-out { animation: slideOutUp 0.5s ease-out; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#016bb8] to-[#319fe8] text-[#fee3b3]">
+    
+    <!-- Flash Messages Container -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div id="flash-container" class="fixed top-4 right-4 z-50 space-y-2" style="max-width: 400px;">
+        {% for category, message in messages %}
+            <div class="flash-message bg-white rounded-lg shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-105" 
+                 data-flash-id="flash-{{ loop.index }}">
+                <div class="flex items-start p-4">
+                    <div class="flex-shrink-0 mr-3">
+                        {% if category == 'success' %}
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        {% elif category == 'error' %}
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        {% elif category == 'warning' %}
+                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01" />
+                            </svg>
+                        </div>
+                        {% else %}
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01" />
+                            </svg>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 mb-1">
+                            {% if category == 'success' %}✓ Berhasil
+                            {% elif category == 'error' %}✗ Error
+                            {% elif category == 'warning' %}⚠ Peringatan
+                            {% else %}ℹ Informasi
+                            {% endif %}
+                        </p>
+                        <p class="text-sm text-gray-600 break-words">{{ message }}</p>
+                    </div>
+                    
+                    <button onclick="dismissFlash('flash-{{ loop.index }}')" 
+                            class="flex-shrink-0 ml-3 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="h-1 bg-gray-200">
+                    <div class="h-full {% if category == 'success' %}bg-green-500{% elif category == 'error' %}bg-red-500{% elif category == 'warning' %}bg-yellow-500{% else %}bg-blue-500{% endif %}"
+                         style="width: 100%; animation: progressBar 3s linear;"></div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            
+            flashMessages.forEach((flash) => {
+                const flashId = flash.getAttribute('data-flash-id');
+                setTimeout(() => dismissFlash(flashId), 3000);
+            });
+        });
+
+        function dismissFlash(flashId) {
+            const flashElement = document.querySelector(`[data-flash-id="${flashId}"]`);
+            if (flashElement) {
+                flashElement.classList.add('fade-out');
+                setTimeout(() => {
+                    flashElement.remove();
+                    const container = document.getElementById('flash-container');
+                    if (container && container.children.length === 0) {
+                        container.remove();
+                    }
+                }, 500);
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

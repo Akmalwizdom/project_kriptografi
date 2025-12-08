@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Algoritma - SecureVault Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#016bb8] text-[#fee3b3] p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8 pt-8">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-[#319fe8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-[#fee3b3] mb-2">Pilih Algoritma</h1>
+            <p class="text-[#fee3b3]">
+                {% if mode == 'encrypt' %}
+                Mode: <span class="text-[#319fe8] font-semibold">Enkripsi</span>
+                {% else %}
+                Mode: <span class="text-[#fec972] font-semibold">Dekripsi</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-center mb-8">
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#fec972] text-[#016bb8] font-bold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div class="w-16 h-1 mx-2 bg-[#fec972]"></div>
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#319fe8] text-[#016bb8] font-bold">
+                    2
+                </div>
+                <div class="w-16 h-1 mx-2 bg-[#319fe8]"></div>
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-transparent border border-[#319fe8] text-[#fee3b3] font-bold">
+                    3
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithm Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- AES -->
+            <a href="{{ url_for('upload_file', algorithm='AES') }}" 
+               class="group bg-transparent border-2 border-[#319fe8] rounded-xl p-6 hover:bg-[#319fe8] transition-all duration-300 transform hover:scale-105">
+                <div class="text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-16 h-16 text-[#319fe8] group-hover:text-[#016bb8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-[#fee3b3] group-hover:text-[#016bb8] mb-2">AES</h2>
+                    <p class="text-[#fee3b3] group-hover:text-[#016bb8] text-sm mb-4">Advanced Encryption Standard</p>
+                    <ul class="text-left text-sm text-[#fee3b3] group-hover:text-[#016bb8] space-y-1">
+                        <li>✓ Enkripsi 128-bit</li>
+                        <li>✓ Standar industri</li>
+                        <li>✓ Kecepatan tinggi</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- Blowfish -->
+            <a href="{{ url_for('upload_file', algorithm='Blowfish') }}" 
+               class="group bg-transparent border-2 border-[#fec972] rounded-xl p-6 hover:bg-[#fec972] transition-all duration-300 transform hover:scale-105">
+                <div class="text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-16 h-16 text-[#fec972] group-hover:text-[#016bb8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-[#fee3b3] group-hover:text-[#016bb8] mb-2">Blowfish</h2>
+                    <p class="text-[#fee3b3] group-hover:text-[#016bb8] text-sm mb-4">Symmetric Block Cipher</p>
+                    <ul class="text-left text-sm text-[#fee3b3] group-hover:text-[#016bb8] space-y-1">
+                        <li>✓ Enkripsi 64-bit block</li>
+                        <li>✓ Keamanan tinggi</li>
+                        <li>✓ Fleksibel</li>
+                    </ul>
+                </div>
+            </a>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center">
+            <a href="{{ url_for('index') }}" 
+               class="inline-flex items-center px-6 py-3 bg-transparent border border-[#319fe8] text-[#fee3b3] rounded-lg hover:bg-[#fee3b3] hover:text-[#016bb8] hover:border-[#fee3b3] transition-all">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Kembali ke Menu Utama
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            body.style.opacity = '0';
+            setTimeout(() => {
+                body.style.transition = 'opacity 0.6s ease';
+                body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
