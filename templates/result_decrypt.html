@@ -33,7 +33,7 @@
             <div class="lg:col-span-1 space-y-6">
                 
                 <!-- Integrity Status Card -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 {% if decrypted_info.is_valid == True %}border-l-green-500{% elif decrypted_info.is_valid == False %}border-l-red-500{% else %}border-l-accent-gold{% endif %}">
+                <div class="glass-panel p-6 rounded-3xl border-l-4 {% if decrypted_info.is_valid == True %}border-l-green-500{% elif decrypted_info.is_valid == False %}border-l-red-500{% else %}border-l-accent-gold{% endif %}">
                     <h3 class="text-sm uppercase tracking-wider text-slate-500 font-semibold mb-3">Status Integritas</h3>
                     
                     {% if decrypted_info.is_valid == True %}
@@ -70,7 +70,7 @@
                 </div>
 
                 <!-- File Details Card -->
-                <div class="glass-panel p-6 rounded-2xl">
+                <div class="glass-panel p-6 rounded-3xl">
                     <h3 class="text-sm uppercase tracking-wider text-slate-500 font-semibold mb-4">Detail File</h3>
                     <ul class="space-y-4">
                         <li>
@@ -100,7 +100,7 @@
 
             <!-- Right Column: Video Preview -->
             <div class="lg:col-span-2">
-                <div class="glass-panel p-1 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col">
+                <div class="glass-panel p-1 rounded-3xl overflow-hidden shadow-2xl h-full flex flex-col">
                     <div class="bg-slate-950 rounded-xl overflow-hidden relative flex-grow min-h-[300px] flex items-center justify-center group">
                         {% if decrypted_info.is_valid != False %}
                             <video controls class="w-full h-full max-h-[500px] object-contain focus:outline-none">
