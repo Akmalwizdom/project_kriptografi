@@ -59,8 +59,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/securevault-video.git
-   cd securevault-video
+   git clone https://github.com/Akmalwizdom/project_kriptografi.git
+   cd project_kriptografi
    ```
 
 2. **Create virtual environment (recommended)**
