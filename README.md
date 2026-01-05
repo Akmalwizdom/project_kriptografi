@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
 </p>
 
-<h1 align="center">🔐 SecureVault Video</h1>
+<h1 align="center">SecureVault Video</h1>
 
 <p align="center">
   <strong>Military-Grade Video Encryption & Decryption Platform</strong>
@@ -18,21 +18,21 @@
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| 🔒 **Dual Encryption Algorithms** | Choose between AES-256-CBC or Blowfish-CBC for maximum security |
-| 📹 **Multi-Format Support** | Supports MP4, MOV, AVI, MKV, and WMV video formats |
-| ⚡ **Streaming Encryption** | Memory-efficient chunk-based processing for large files (up to 500MB) |
-| 🔑 **Password Protection** | Secure key derivation using SHA-256 hashing |
-| ✅ **Integrity Verification** | SHA-256 hash verification ensures file integrity after decryption |
-| 📊 **Benchmark Results** | Track and compare encryption/decryption performance |
-| 🎨 **Modern UI** | Beautiful glassmorphism design with dark mode |
+| **Dual Encryption Algorithms** | Choose between AES-256-CBC or Blowfish-CBC for maximum security |
+| **Multi-Format Support** | Supports MP4, MOV, AVI, MKV, and WMV video formats |
+| **Streaming Encryption** | Memory-efficient chunk-based processing for large files (up to 500MB) |
+| **Password Protection** | Secure key derivation using SHA-256 hashing |
+| **Integrity Verification** | SHA-256 hash verification ensures file integrity after decryption |
+| **Benchmark Results** | Track and compare encryption/decryption performance |
+| **Modern UI** | Beautiful glassmorphism design with dark mode |
 
 ---
 
-## 🛡️ Security Algorithms
+## Security Algorithms
 
 ### AES-256 (Advanced Encryption Standard)
 - **Key Size**: 256-bit
@@ -48,7 +48,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -91,14 +91,14 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 securevault-video/
-├── 📄 app.py                 # Main Flask application
-├── 📄 crypto_logic.py        # Encryption/decryption logic
-├── 📄 requirements.txt       # Python dependencies
-├── 📁 templates/             # HTML templates
+├── app.py                 # Main Flask application
+├── crypto_logic.py        # Encryption/decryption logic
+├── requirements.txt       # Python dependencies
+├── templates/             # HTML templates
 │   ├── base.html             # Base layout template
 │   ├── index.html            # Home page
 │   ├── select_algorithm.html # Algorithm selection
@@ -106,14 +106,14 @@ securevault-video/
 │   ├── result_encrypt.html   # Encryption result
 │   ├── result_decrypt.html   # Decryption result
 │   └── test_results.html     # Benchmark results
-├── 📁 static/                # Static assets (CSS, JS)
-├── 📁 user_uploads/          # Temporary upload storage
-└── 📁 output_temp/           # Processed files output
+├── static/                # Static assets (CSS, JS)
+├── user_uploads/          # Temporary upload storage
+└── output_temp/           # Processed files output
 ```
 
 ---
 
-## 🔧 Usage Guide
+## Usage Guide
 
 ### Encrypting a Video
 
@@ -133,13 +133,13 @@ securevault-video/
 
 ---
 
-## 📊 Performance Benchmarks
+## Performance Benchmarks
 
 The application includes built-in benchmarking to compare encryption algorithms:
 
 | Metric | AES-256 | Blowfish |
 |--------|---------|----------|
-| Security Level | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Security Level | High | Medium-High |
 | Encryption Speed | Fast | Faster |
 | Block Size | 128-bit | 64-bit |
 | Recommended For | High Security | Speed Priority |
@@ -148,20 +148,20 @@ The application includes built-in benchmarking to compare encryption algorithms:
 
 ---
 
-## 🔐 Security Best Practices
+## Security Best Practices
 
 > [!IMPORTANT]
 > Follow these guidelines to maximize security:
 
-- ✅ Use strong, unique passwords (12+ characters with mixed case, numbers, symbols)
-- ✅ Store encrypted files and passwords separately
-- ✅ Remember your password - there's no recovery option
-- ✅ Verify file integrity after decryption using the built-in hash check
-- ❌ Never share your encryption password over unsecured channels
+- Use strong, unique passwords (12+ characters with mixed case, numbers, symbols)
+- Store encrypted files and passwords separately
+- Remember your password - there's no recovery option
+- Verify file integrity after decryption using the built-in hash check
+- Never share your encryption password over unsecured channels
 
 ---
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Encryption Process
 
@@ -186,7 +186,7 @@ The application includes built-in benchmarking to compare encryption algorithms:
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 | Package | Purpose |
 |---------|---------|
@@ -197,9 +197,9 @@ The application includes built-in benchmarking to compare encryption algorithms:
 ---
 
 <p align="center">
-  <strong>🔐 Secure Your Videos with Confidence 🔐</strong>
+  <strong>Secure Your Videos with Confidence</strong>
 </p>
 
 <p align="center">
-  Made with ❤️ for Cryptography Class Project
+  Made for Cryptography Class Project
 </p>
